@@ -1,33 +1,39 @@
 <script setup>
-import { ref } from 'vue';
-import {useUserStore} from '@/stores/user';
-const store = useUserStore();
+import { ref } from 'vue'
+import { useUserStore } from '@/stores/user'
+const store = useUserStore()
+
+const imagem = ref(false)
 
 function submit(dados) {
-    store.submit(dados)
+  store.submit(dados.value)
 }
-function onChangeFile(event) {
-      this.$emit('update:picture', event.target.files[0])
-    }
 
-const dados = ref({
-    name: '',
-    email: '',
-    password: '',
-    picture: File
+defineProps({
+  dados: Object
 })
+
+function handleFileChange(e) {
+    dados.value.picture = URL.createObjectURL(e.target.files[0])
+}
 </script>
+
 <template>
-    <form @submit.prevent="">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" v-model="name">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" v-model="email">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" v-model="password">
-        <label for="picture">picture</label>
-        <input type="file" id="picture" name="picture" @change="onChangeFile">
-        <button type="submit" @click="submit(dados)">Submit</button>
-        <button type="submit">Submit</button>
-    </form>
+  <form @submit.prevent="submit(dados)">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" v-model="dados.name" required />
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" v-model="dados.email" required/>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" v-model="dados.password" required />
+    <label for="picture">Picture:</label>
+    <input type="file" id="picture" name="picture" @change="handleFileChange" required/>
+
+    <button type="submit">Submit</button>
+  </form>
+  <div v-if="imagem">
+    <img :src="dados.picture" alt="User Image">
+  </div>
+  <br>
+  <button @click="imagem = !imagem">MOSTRAR</button>
 </template>
