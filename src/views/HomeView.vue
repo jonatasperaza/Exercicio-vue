@@ -1,8 +1,15 @@
 <script setup>
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import FormComponent from '@/components/formComponent.vue';
 import FormViewerComponent from '@/components/formViewerComponent.vue';
+import { useUserStore } from '@/stores/user';
+const store = useUserStore();
 const view = ref(false)
+onMounted(() => {
+   if(store.nome){
+     view.value = true
+   }
+})
 function views(){
 view.value = !view.value
 }
@@ -14,6 +21,7 @@ const dados = reactive({
   senha: '',
   senhaconfirma: '',
   cep: '',
+  numero: '',
   hobbies: [],
   linguagens: [],
 })
@@ -46,7 +54,7 @@ const linguagens = [
 </script>
 <template>
     <FormComponent v-if="!view" @views="views" :hobbies="hobbies" :linguagens="linguagens" :dados="dados"/>
-    <FormViewerComponent v-if="view" :dados="dados" />
+    <FormViewerComponent v-if="view" @views="views" :dados="dados" />
 </template>
 <style scoped>
     h1 {

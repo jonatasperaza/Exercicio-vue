@@ -1,7 +1,12 @@
 <script setup>
 import { useUserStore } from '@/stores/user';
 const store = useUserStore();
+const emit = defineEmits(['views']);
 console.log(store)
+function logout(){
+  store.logout()
+  emit('views');
+}
 </script>
 
 <template>
@@ -20,7 +25,7 @@ console.log(store)
       <p>{{ store.hobbies }}</p>
       <p>{{ store.linguagens }}</p>
       <p>{{ store.hobbies }}</p>
-      <button style="display: flex;margin: auto; width: auto; text-align: center;" @click="store.logout">Logout</button>
+      <button style="display: flex;margin: auto; width: auto; text-align: center;" @click="logout()">Logout</button>
     </div>
   </div>
 </template>

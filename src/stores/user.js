@@ -12,6 +12,7 @@ export const useUserStore = defineStore('user', () => {
     senha: '',
     senhaconfirma: '',
     cep: '',
+    numero: '',
     endereco: {},
     hobbies: [],
     linguagens: [],
@@ -21,7 +22,6 @@ export const useUserStore = defineStore('user', () => {
 
   async function getEndereco(cep) {
     const response = await cepService.getCep(cep)
-    console.log(response)
     return await response
   }
 
@@ -33,6 +33,7 @@ export const useUserStore = defineStore('user', () => {
       senha: dados.senha,
       senhaconfirma: dados.senhaconfirma,
       cep: dados.cep,
+      numero: dados.numero,
       endereco: await getEndereco(dados.cep),
       hobbies: dados.hobbies,
       linguagens: dados.linguagens,

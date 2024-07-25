@@ -2,15 +2,6 @@
 import { ref, defineEmits } from 'vue';
 import { useUserStore } from '@/stores/user';
 
-const store = useUserStore();
-const emit = defineEmits(['views']);
-
-const imagem = ref(false);
-
-function submit(dados) {
-  store.submit(dados);
-  emit('views');
-}
 
 const props = defineProps({
   dados: Object,
@@ -19,9 +10,58 @@ const props = defineProps({
 });
 
 const dados = ref({ ...props.dados });
+const store = useUserStore();
+const emit = defineEmits(['views']);
+
+const imagem = ref(false);
+
+function submit(dados) {
+  console.log(dados)
+  if (dados.nome ===''){
+    alert('Nome é obrigatório')
+  }
+  else if (dados.email ===''){
+    alert('Email é obrigatório')
+  }
+  else if (dados.password ===''){
+    alert('Senha é obrigatório')
+  }
+  else if (dados.password !== dados.senhaconfirma){
+    alert('Senhas não conferem')
+  }
+  else if (dados.senhaconfirma ===''){
+    alert('Confirmação de senha é obrigatório')
+  }
+  else if (dados.cep ===''){
+    alert('CEP é obrigatório')
+  }
+  else if (dados.numero ===''){
+    alert('Número é obrigatório')
+  }
+  else if (dados.hobbies.length === 0){
+    alert('Hobbies é obrigatório')
+  }
+  else if (dados.linguagens.length === 0){
+    alert('Linguagens é obrigatório')
+  }
+  else if (dados.picture === null){
+    alert('Imagem é obrigatório')
+  }
+  else{
+    store.submit(dados);
+    emit('views');
+  }
+}
+
+
 
 function handleFileChange(e) {
-  dados.value.picture = URL.createObjectURL(e.target.files[0]);
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => {
+    dados.value.picture = reader.result;
+  };
 }
 
 console.log(dados.value);
@@ -48,6 +88,10 @@ console.log(dados.value);
     <div class="form-group">
       <label for="cep">CEP:</label>
       <input type="text" id="cep" name="cep" v-model="dados.cep" required />
+    </div>
+    <div class="form-group">
+      <label for="number">Número:</label>
+      <input type="text" id="number" name="number" v-model="dados.numero" required />
     </div>
     <div class="form-group">
       <label for="hobbies">Hobbies:</label>
