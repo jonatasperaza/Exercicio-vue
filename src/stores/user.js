@@ -3,33 +3,57 @@ import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
 import { CepService } from '@/services'
 
-const cepService = CepService;
+const cepService = new CepService;
 export const useUserStore = defineStore('user', () => {
   const localUser = {
+    nome: '',
     email: '',
     picture: '',
-    nome: '',
-    senhaconfirma: '',
     senha: '',
+    senhaconfirma: '',
     cep: '',
-    endereco: '',
-  };
+    endereco: {},
+    hobbies: [],
+    linguagens: [],
+  }
 
   const userStorageLocal = useStorage('user', localUser)
 
   async function getEndereco(cep) {
     const response = await cepService.getCep(cep)
-    const data = await response.json()
-    localUser.endereco = data.logradouro
+    console.log(response)
+    return await response
   }
 
-  function submit(dados) {
-    userStorageLocal.value = dados
+  async function submit(dados) {
+    userStorageLocal.value = {
+      nome: dados.nome,
+      email: dados.email,
+      picture: dados.picture,
+      senha: dados.senha,
+      senhaconfirma: dados.senhaconfirma,
+      cep: dados.cep,
+      endereco: await getEndereco(dados.cep),
+      hobbies: dados.hobbies,
+      linguagens: dados.linguagens,
+    }
+  }
+
+  function logout() {
+    userStorageLocal.value = {
+      nome: '',
+      email: '',
+      picture: '',
+      senha: '',
+      senhaconfirma: '',
+      cep: '',
+      endereco: {},
+      hobbies: [],
+      linguagens: [],
+    }
   }
 
 
-
-  const username = computed(() => userStorageLocal.value.username)
   const email = computed(() => userStorageLocal.value.email)
   const picture = computed(() => userStorageLocal.value.picture)
   const nome = computed(() => userStorageLocal.value.nome)
@@ -37,10 +61,9 @@ export const useUserStore = defineStore('user', () => {
   const senha = computed(() => userStorageLocal.value.senha)
   const cep = computed(() => userStorageLocal.value.cep)
   const endereco = computed(() => userStorageLocal.value.endereco)
+  const hobbies = computed(() => userStorageLocal.value.hobbies)
+  const linguagens = computed(() => userStorageLocal.value.linguagens)
 
-  function setUsername(novoDado) {
-    username.value = novoDado;
-  }
 
   function setEmail(novoDado) {
     email.value = novoDado;
@@ -51,7 +74,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   function setNome(novoDado) {
-    nome.value = novoDado;
+    nome.value = novoDado
   }
   
   function setSenhaConfirma(novoDado) {
@@ -69,8 +92,14 @@ export const useUserStore = defineStore('user', () => {
   function setEndereco(novoDado) {
     endereco.value = novoDado;
   }
+
+  function setHobbies(novoDado) {
+    hobbies.value = novoDado
+  }
+
+  function setLinguagens(novoDado) {
+    hobbies.value = novoDado
+  }
  
-
-
-  return { localUser, userStorageLocal, username, email, picture, nome, senhaconfirma, senha, cep, endereco, getEndereco, setUsername, setEmail, setPicture, setNome, setSenhaConfirma, setSenha, setCep, setEndereco, submit }
+  return { localUser, userStorageLocal, email, picture, nome, senhaconfirma, senha, cep, endereco, getEndereco, setEmail, setPicture, setNome, setSenhaConfirma, setSenha, setCep, setEndereco, submit, hobbies, setHobbies, linguagens, setLinguagens, logout }
 })
